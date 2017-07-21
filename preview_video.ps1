@@ -2,7 +2,7 @@
 
 param (
   [string]$inFile,
-  [string]$outPath,
+  [string]$outPath = ".\",
   [string]$outPrefix = "preview_",
   [string]$outSuffix,
   [int]$previewSize = 300,
@@ -18,6 +18,9 @@ function New-TemporaryDirectory {
 
 if(-not($inFile)) { Throw "You must supply a value for -inFile" }
 if(-not($outPath)) { Throw "You must supply a value for -outPath" }
+if(-not($previewSize)) { Throw "You must supply a value for -previewSize" }
+if(-not($clipDuration)) { Throw "You must supply a value for -clipDuration" }
+if(-not($clipCount)) { Throw "You must supply a value for -clipCount" }
 
 if( -not (test-path $inFile)) {
   Throw "File $inFile not found"
