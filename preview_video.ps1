@@ -3,13 +3,15 @@
 param (
   [string]$inFile,
   [string]$outPath,
+  [string]$outPrefix = "preview_",
+  [string]$outSuffix,
   [int]$previewSize = 300,
   [int]$clipDuration = 2,
   [int]$clipCount = 6
 )
 
 function New-TemporaryDirectory {
-  $parent = ".\"
+  $parent = [System.IO.Path]::GetTempPath()
   [string] $name = [System.Guid]::NewGuid()
   New-Item -ItemType Directory -Path (Join-Path $parent $name)
 }
@@ -52,7 +54,7 @@ Invoke-Expression "ffmpeg -i '$inFile' -ss 00 -t $clipDuration -an $tempDir\0.mp
 }
 
 # concatenate clips to preview video in $outPath
-Invoke-Expression "ffmpeg -i 'concat:$concat' -crf 24 -vf scale='trunc(iw*min($previewSize/iw\,$previewSize/ih)/2)*2:trunc(ih*min($previewSize/iw\,$previewSize/ih)/2)*2' '$($outPath)\$($inFilename)'"
+Invoke-Expression "ffmpeg -i 'concat:$concat' -crf 24 -vf scale='trunc(iw*min($previewSize/iw\,$previewSize/ih)/2)*2:trunc(ih*min($previewSize/iw\,$previewSize/ih)/2)*2' '$($outPath)\$($outPrefix)$($inBasename)$($outSuffix)$($inExtension)'"
 
 # Delete temp dir
 Remove-Item $tempDir -Force -Recurse
